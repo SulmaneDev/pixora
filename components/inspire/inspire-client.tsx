@@ -296,7 +296,7 @@ export default function InspireClient() {
 }
 
 function InspirationCard({ doc, user }: { doc: any, user: any }) {
-    const imageUrl = `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT} /storage/buckets / ${PIXORA_BUCKET_ID} /files/${doc.image_id}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`;
+    const imageUrl = `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${PIXORA_BUCKET_ID}/files/${doc.image_id}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`;
 
     const handleAction = (action: () => void) => {
         if (!user) {
