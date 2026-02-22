@@ -68,6 +68,12 @@ export default function RootLayout({
       <body className={`${inter.className} bg-background text-foreground min-h-screen antialiased`}>
         <ClientProviders>
           {children}
+          {/* Beta Watermark */}
+          <div className="fixed bottom-4 right-4 z-[9999] pointer-events-none select-none opacity-50 hover:opacity-100 transition-opacity">
+            <div className="bg-primary/10 backdrop-blur-md border border-primary/20 text-primary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-xl">
+              Beta Version 6.0
+            </div>
+          </div>
         </ClientProviders>
       </body>
     </html>

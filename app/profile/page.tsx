@@ -38,10 +38,12 @@ import {
     LayoutDashboard,
     Lightbulb,
     User,
-    Trash2,
-    Image as ImageIcon,
+    Download,
+    Maximize2,
+    Copy,
     Loader2,
-    ExternalLink,
+    Image as ImageIcon,
+    Trash2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { deleteGeneration } from '@/lib/whisk';
@@ -69,7 +71,6 @@ export default function ProfilePage() {
     });
 
     const handleDelete = async (docId: string, imageId: string) => {
-        setDeletingId(docId);
         try {
             await deleteGeneration(docId, imageId);
             toast.success('Generation deleted');
@@ -80,6 +81,26 @@ export default function ProfilePage() {
             toast.error('Failed to delete');
         } finally {
             setDeletingId(null);
+        }
+    };
+
+    const downloadImage = async (imageId: string, prompt: string) => {
+        try {
+            const downloadUrl = `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${PIXORA_BUCKET_ID}/files/${imageId}/download?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`;
+            const response = await fetch(downloadUrl);
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pixora-${prompt.slice(0, 20)}.png`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            toast.success('Download started');
+        } catch {
+            toast.error('Download failed - trying direct link');
+            window.open(`${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${PIXORA_BUCKET_ID}/files/${imageId}/download?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`, '_blank');
         }
     };
 
@@ -202,56 +223,103 @@ export default function ProfilePage() {
                                         const imageUrl = `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${PIXORA_BUCKET_ID}/files/${gen.image_id}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`;
                                         const isDeleting = deletingId === gen.$id;
                                         return (
-                                            <div key={gen.$id} className="group relative aspect-square rounded-xl overflow-hidden border bg-muted">
-                                                {isDeleting ? (
-                                                    <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
-                                                        <Loader2 className="h-5 w-5 animate-spin text-destructive" />
-                                                    </div>
-                                                ) : null}
-                                                <img
-                                                    src={imageUrl}
-                                                    alt={gen.prompt}
-                                                    className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                                                />
-                                                {/* Hover overlay */}
-                                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3">
-                                                    <div className="flex justify-end gap-1.5">
-                                                        <Button
-                                                            size="icon"
-                                                            variant="secondary"
-                                                            className="h-7 w-7"
-                                                            onClick={() => window.open(imageUrl, '_blank')}
-                                                        >
-                                                            <ExternalLink className="h-3.5 w-3.5" />
-                                                        </Button>
-                                                        <AlertDialog>
+                                            <AlertDialog key={gen.$id}>
+                                                <div className="group relative aspect-square rounded-xl overflow-hidden border bg-muted cursor-pointer">
+                                                    {isDeleting ? (
+                                                        <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
+                                                            <Loader2 className="h-5 w-5 animate-spin text-destructive" />
+                                                        </div>
+                                                    ) : null}
+                                                    <img
+                                                        src={imageUrl}
+                                                        alt={gen.prompt}
+                                                        className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                                                    />
+                                                    {/* Hover overlay */}
+                                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3">
+                                                        <div className="flex justify-end gap-1.5">
                                                             <AlertDialogTrigger asChild>
-                                                                <Button size="icon" variant="destructive" className="h-7 w-7">
-                                                                    <Trash2 className="h-3.5 w-3.5" />
+                                                                <Button
+                                                                    size="icon"
+                                                                    variant="secondary"
+                                                                    className="h-7 w-7"
+                                                                >
+                                                                    <Maximize2 className="h-3.5 w-3.5" />
                                                                 </Button>
                                                             </AlertDialogTrigger>
-                                                            <AlertDialogContent>
-                                                                <AlertDialogHeader>
-                                                                    <AlertDialogTitle>Delete this creation?</AlertDialogTitle>
-                                                                    <AlertDialogDescription>
-                                                                        This will permanently remove the image from your gallery and the community feed. This action cannot be undone.
-                                                                    </AlertDialogDescription>
-                                                                </AlertDialogHeader>
-                                                                <AlertDialogFooter>
-                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                    <AlertDialogAction
-                                                                        className="bg-destructive hover:bg-destructive/90"
-                                                                        onClick={() => handleDelete(gen.$id, gen.image_id)}
-                                                                    >
-                                                                        Delete
-                                                                    </AlertDialogAction>
-                                                                </AlertDialogFooter>
-                                                            </AlertDialogContent>
-                                                        </AlertDialog>
+                                                            <AlertDialog>
+                                                                <AlertDialogTrigger asChild>
+                                                                    <Button size="icon" variant="destructive" className="h-7 w-7">
+                                                                        <Trash2 className="h-3.5 w-3.5" />
+                                                                    </Button>
+                                                                </AlertDialogTrigger>
+                                                                <AlertDialogContent>
+                                                                    <AlertDialogHeader>
+                                                                        <AlertDialogTitle>Delete this creation?</AlertDialogTitle>
+                                                                        <AlertDialogDescription>
+                                                                            This will permanently remove the image from your gallery and the community feed. This action cannot be undone.
+                                                                        </AlertDialogDescription>
+                                                                    </AlertDialogHeader>
+                                                                    <AlertDialogFooter>
+                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                        <AlertDialogAction
+                                                                            className="bg-destructive hover:bg-destructive/90"
+                                                                            onClick={() => {
+                                                                                setDeletingId(gen.$id);
+                                                                                handleDelete(gen.$id, gen.image_id);
+                                                                            }}
+                                                                        >
+                                                                            Delete
+                                                                        </AlertDialogAction>
+                                                                    </AlertDialogFooter>
+                                                                </AlertDialogContent>
+                                                            </AlertDialog>
+                                                        </div>
+                                                        <p className="text-white text-[10px] line-clamp-2 italic leading-relaxed">"{gen.prompt}"</p>
                                                     </div>
-                                                    <p className="text-white text-[10px] line-clamp-2 italic leading-relaxed">"{gen.prompt}"</p>
                                                 </div>
-                                            </div>
+
+                                                <AlertDialogContent className="max-w-[95vw] lg:max-w-[70vw] h-[85vh] p-0 overflow-hidden bg-black/95 border-0">
+                                                    <div className="relative w-full h-full flex items-center justify-center p-4">
+                                                        <AlertDialogCancel className="absolute right-4 top-4 z-50 rounded-full h-10 w-10 p-0 border-0 bg-white/10 hover:bg-white/20 text-white backdrop-blur-md">
+                                                            ✕
+                                                        </AlertDialogCancel>
+
+                                                        <div className="flex flex-col lg:flex-row w-full h-full gap-6">
+                                                            <div className="flex-1 relative bg-neutral-900 rounded-2xl overflow-hidden flex items-center justify-center">
+                                                                <img
+                                                                    src={imageUrl.replace('/view', '/download')}
+                                                                    alt={gen.prompt}
+                                                                    className="max-w-full max-h-full object-contain"
+                                                                />
+                                                            </div>
+
+                                                            <div className="w-full lg:w-72 flex flex-col gap-6 p-2 lg:p-6 lg:border-l border-white/10">
+                                                                <div>
+                                                                    <h3 className="text-sm font-bold uppercase tracking-widest text-primary/70 mb-2">Prompt Detail</h3>
+                                                                    <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-xs text-white leading-relaxed italic">
+                                                                        "{gen.prompt}"
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="mt-auto space-y-3">
+                                                                    <Button onClick={() => downloadImage(gen.image_id, gen.prompt)} className="w-full gap-2 h-12 font-bold" variant="default">
+                                                                        <Download className="h-4 w-4" />
+                                                                        Download HD
+                                                                    </Button>
+                                                                    <Button onClick={() => {
+                                                                        navigator.clipboard.writeText(gen.prompt);
+                                                                        toast.success('Prompt copied');
+                                                                    }} variant="outline" className="w-full border-white/10 text-white h-12 font-bold bg-white/5 hover:bg-white/10">
+                                                                        <Copy className="h-4 w-4 mr-2" />
+                                                                        Copy Prompt
+                                                                    </Button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
                                         );
                                     })}
                                 </div>
