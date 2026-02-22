@@ -279,44 +279,45 @@ export default function ProfilePage() {
                                                     </div>
                                                 </div>
 
-                                                <AlertDialogContent className="max-w-[95vw] lg:max-w-6xl h-auto max-h-[95vh] p-0 overflow-hidden bg-zinc-950/90 border-0 backdrop-blur-2xl ring-1 ring-white/10 shadow-2xl">
-                                                    <div className="relative w-full h-full flex flex-col lg:flex-row overflow-hidden">
-                                                        <AlertDialogCancel className="absolute right-4 top-4 z-50 rounded-full h-10 w-10 p-0 border-0 bg-white/5 hover:bg-white/10 text-white backdrop-blur-md transition-colors">
+                                                <AlertDialogContent className="max-w-[95vw] lg:max-w-[80vw] h-auto lg:h-[90vh] p-0 overflow-hidden bg-zinc-950 border-0 shadow-2xl ring-1 ring-white/10">
+                                                    <div className="flex flex-col lg:flex-row h-full w-full relative">
+                                                        <AlertDialogCancel className="absolute right-4 top-4 z-50 rounded-full h-10 w-10 p-0 border-0 bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all">
                                                             ✕
                                                         </AlertDialogCancel>
 
-                                                        {/* Image Container */}
-                                                        <div className="flex-[2] relative bg-neutral-900/50 flex items-center justify-center p-4 lg:p-10 min-h-[300px] lg:min-h-0">
-                                                            <div className="relative w-full h-full flex items-center justify-center">
-                                                                <img
-                                                                    src={imageUrl.replace('/view', '/download')}
-                                                                    alt={gen.prompt}
-                                                                    className="max-w-full max-h-[60vh] lg:max-h-[80vh] object-contain rounded-lg shadow-2xl ring-1 ring-white/5"
-                                                                />
-                                                            </div>
+                                                        {/* Image Section */}
+                                                        <div className="flex-[3] bg-black flex items-center justify-center p-4 min-h-[50vh] lg:min-h-0">
+                                                            <img
+                                                                src={imageUrl.replace('/view', '/download')}
+                                                                alt={gen.prompt}
+                                                                className="w-full h-full object-contain"
+                                                                style={{ maxHeight: 'calc(90vh - 40px)' }}
+                                                            />
                                                         </div>
 
-                                                        {/* Details Sidebar */}
-                                                        <div className="flex-1 min-w-[300px] max-w-sm flex flex-col gap-8 p-6 lg:p-10 border-t lg:border-t-0 lg:border-l border-white/5 bg-black/40">
-                                                            <div className="space-y-4">
-                                                                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80">Asset Blueprint</h3>
-                                                                <div className="relative p-6 rounded-2xl bg-white/[0.03] border border-white/5 text-sm text-zinc-200 leading-relaxed font-medium italic shadow-inner">
-                                                                    "{gen.prompt}"
-                                                                </div>
-                                                            </div>
+                                                        {/* Sidebar section */}
+                                                        <div className="flex-1 lg:max-w-xs border-t lg:border-t-0 lg:border-l border-white/10 flex flex-col bg-zinc-900/50">
+                                                            <div className="p-6 lg:p-8 space-y-8 flex-1">
+                                                                <section>
+                                                                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 mb-4">Neural Data</h3>
+                                                                    <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 text-sm text-zinc-300 leading-relaxed italic">
+                                                                        "{gen.prompt}"
+                                                                    </div>
+                                                                </section>
 
-                                                            <div className="mt-auto space-y-4">
-                                                                <Button onClick={() => downloadImage(gen.image_id, gen.prompt)} className="w-full gap-3 h-14 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:-translate-y-0.5" variant="default">
-                                                                    <Download className="h-4 w-4" />
-                                                                    Download High-Res
-                                                                </Button>
-                                                                <Button onClick={() => {
-                                                                    navigator.clipboard.writeText(gen.prompt);
-                                                                    toast.success('Prompt copied');
-                                                                }} variant="outline" className="w-full border-white/10 text-white h-14 font-black uppercase tracking-widest text-[11px] bg-white/[0.03] hover:bg-white/[0.08] transition-all">
-                                                                    <Copy className="h-4 w-4 mr-2" />
-                                                                    Copy Prompt
-                                                                </Button>
+                                                                <div className="pt-6 space-y-4">
+                                                                    <Button onClick={() => downloadImage(gen.image_id, gen.prompt)} className="w-full gap-3 h-14 font-black uppercase tracking-widest text-[11px] shadow-xl" variant="default">
+                                                                        <Download className="h-4 w-4" />
+                                                                        Download Master
+                                                                    </Button>
+                                                                    <Button onClick={() => {
+                                                                        navigator.clipboard.writeText(gen.prompt);
+                                                                        toast.success('Prompt copied');
+                                                                    }} variant="outline" className="w-full border-white/10 text-white h-14 font-black uppercase tracking-widest text-[11px] bg-white/[0.03] hover:bg-white/[0.08]">
+                                                                        <Copy className="h-4 w-4 mr-2" />
+                                                                        Copy Prompt
+                                                                    </Button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>

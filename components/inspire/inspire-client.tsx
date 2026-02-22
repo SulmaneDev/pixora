@@ -395,58 +395,66 @@ function InspirationCard({ doc, user }: { doc: any, user: any }) {
                 </div>
             </Card>
 
-            <AlertDialogContent className="max-w-[95vw] lg:max-w-7xl h-auto max-h-[95vh] p-0 overflow-hidden bg-zinc-950/90 border-0 backdrop-blur-2xl ring-1 ring-white/10 shadow-2xl">
-                <div className="relative w-full h-full flex flex-col lg:flex-row overflow-hidden">
-                    <AlertDialogCancel className="absolute right-4 top-4 z-50 rounded-full h-10 w-10 p-0 border-0 bg-white/5 hover:bg-white/10 text-white backdrop-blur-md transition-colors">
+            <AlertDialogContent className="max-w-[95vw] lg:max-w-[85vw] h-auto lg:h-[90vh] p-0 overflow-hidden bg-zinc-950 border-0 shadow-2xl ring-1 ring-white/10">
+                <div className="flex flex-col lg:flex-row h-full w-full relative">
+                    <AlertDialogCancel className="absolute right-4 top-4 z-50 rounded-full h-10 w-10 p-0 border-0 bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all">
                         ✕
                     </AlertDialogCancel>
 
-                    {/* Image Container - Using flexible basis and aspect-ratio */}
-                    <div className="flex-[3] relative bg-neutral-900/50 flex items-center justify-center p-4 lg:p-8 min-h-[300px] lg:min-h-0">
-                        <div className="relative w-full h-full flex items-center justify-center">
-                            <img
-                                src={imageUrl.replace('/view', '/download')}
-                                alt={doc.prompt}
-                                className="max-w-full max-h-[70vh] lg:max-h-[85vh] object-contain rounded-lg shadow-2xl ring-1 ring-white/5"
-                            />
-                        </div>
+                    {/* Image Section - Force large size */}
+                    <div className="flex-[3] bg-black flex items-center justify-center p-4 min-h-[50vh] lg:min-h-0">
+                        <img
+                            src={imageUrl.replace('/view', '/download')}
+                            alt={doc.prompt}
+                            className="w-full h-full object-contain"
+                            style={{ maxHeight: 'calc(90vh - 40px)' }}
+                        />
                     </div>
 
-                    {/* Details Sidebar */}
-                    <div className="flex-1 min-w-[320px] max-w-sm flex flex-col gap-8 p-6 lg:p-10 border-t lg:border-t-0 lg:border-l border-white/5 bg-black/40">
-                        <div className="space-y-4">
-                            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80">Neural Blueprint</h3>
-                            <div className="relative group/prompt">
-                                <div className="absolute -inset-2 bg-gradient-to-br from-primary/10 to-transparent rounded-2xl blur-xl opacity-0 group-hover/prompt:opacity-100 transition-opacity" />
-                                <div className="relative p-6 rounded-2xl bg-white/[0.03] border border-white/5 text-sm text-balance text-zinc-200 leading-relaxed font-medium italic shadow-inner">
+                    {/* Sidebar section */}
+                    <div className="flex-1 lg:max-w-sm border-t lg:border-t-0 lg:border-l border-white/10 flex flex-col bg-zinc-900/50">
+                        <div className="p-8 space-y-8 flex-1">
+                            <section>
+                                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 mb-4">Neural Blueprint</h3>
+                                <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 text-sm text-zinc-300 leading-relaxed italic">
                                     "{doc.prompt}"
                                 </div>
+                            </section>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center">
+                                    <p className="text-[8px] font-black uppercase tracking-widest text-zinc-500 mb-1">Ratio</p>
+                                    <p className="text-xs font-bold text-white uppercase">{doc.aspect_ratio?.replace('IMAGE_ASPECT_RATIO_', '').replace('_', ':') || '1:1'}</p>
+                                </div>
+                                <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center">
+                                    <p className="text-[8px] font-black uppercase tracking-widest text-zinc-500 mb-1">Engine</p>
+                                    <p className="text-xs font-bold text-white uppercase">V6.0</p>
+                                </div>
+                            </div>
+
+                            <div className="pt-6 space-y-4">
+                                <Button onClick={downloadImage} className="w-full gap-3 h-14 font-black uppercase tracking-widest text-[11px] shadow-xl" variant="default">
+                                    <Download className="h-4 w-4" />
+                                    Download Master
+                                </Button>
+                                <Button onClick={() => {
+                                    navigator.clipboard.writeText(doc.prompt);
+                                    toast.success('Prompt copied');
+                                }} variant="outline" className="w-full border-white/10 text-white h-14 font-black uppercase tracking-widest text-[11px] bg-white/[0.03] hover:bg-white/[0.08]">
+                                    <Copy className="h-4 w-4 mr-2" />
+                                    Copy Prompt
+                                </Button>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 text-center group hover:bg-white/[0.05] transition-colors">
-                                <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-2">Display Ratio</p>
-                                <p className="text-xs font-bold text-white tracking-wider">{doc.aspect_ratio?.replace('IMAGE_ASPECT_RATIO_', '').replace('_', ':') || '1:1'}</p>
+                        <div className="p-6 border-t border-white/10 bg-black/20 flex items-center gap-4">
+                            <div className="h-10 w-10 rounded-xl bg-primary/20 flex items-center justify-center text-xs font-black text-primary border border-primary/30">
+                                {doc.user_name?.charAt(0) || 'P'}
                             </div>
-                            <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 text-center group hover:bg-white/[0.05] transition-colors">
-                                <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-2">Synthesis Engine</p>
-                                <p className="text-xs font-bold text-white tracking-wider">Neural v6.0</p>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Architect</p>
+                                <p className="text-sm font-bold text-white truncate">{doc.user_name || 'Anonymous'}</p>
                             </div>
-                        </div>
-
-                        <div className="mt-auto space-y-4 pt-10">
-                            <Button onClick={downloadImage} className="w-full gap-3 h-14 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:-translate-y-0.5" variant="default">
-                                <Download className="h-4 w-4" />
-                                Download Master Asset
-                            </Button>
-                            <Button onClick={() => {
-                                navigator.clipboard.writeText(doc.prompt);
-                                toast.success('Prompt copied');
-                            }} variant="outline" className="w-full border-white/10 text-white h-14 font-black uppercase tracking-widest text-[11px] bg-white/[0.03] hover:bg-white/[0.08] transition-all">
-                                <Copy className="h-4 w-4 mr-2" />
-                                Copy Prompt
-                            </Button>
                         </div>
                     </div>
                 </div>
