@@ -279,42 +279,44 @@ export default function ProfilePage() {
                                                     </div>
                                                 </div>
 
-                                                <AlertDialogContent className="max-w-[95vw] lg:max-w-[70vw] h-[85vh] p-0 overflow-hidden bg-black/95 border-0">
-                                                    <div className="relative w-full h-full flex items-center justify-center p-4">
-                                                        <AlertDialogCancel className="absolute right-4 top-4 z-50 rounded-full h-10 w-10 p-0 border-0 bg-white/10 hover:bg-white/20 text-white backdrop-blur-md">
+                                                <AlertDialogContent className="max-w-[95vw] lg:max-w-6xl h-auto max-h-[95vh] p-0 overflow-hidden bg-zinc-950/90 border-0 backdrop-blur-2xl ring-1 ring-white/10 shadow-2xl">
+                                                    <div className="relative w-full h-full flex flex-col lg:flex-row overflow-hidden">
+                                                        <AlertDialogCancel className="absolute right-4 top-4 z-50 rounded-full h-10 w-10 p-0 border-0 bg-white/5 hover:bg-white/10 text-white backdrop-blur-md transition-colors">
                                                             ✕
                                                         </AlertDialogCancel>
 
-                                                        <div className="flex flex-col lg:flex-row w-full h-full gap-6">
-                                                            <div className="flex-1 relative bg-neutral-900 rounded-2xl overflow-hidden flex items-center justify-center">
+                                                        {/* Image Container */}
+                                                        <div className="flex-[2] relative bg-neutral-900/50 flex items-center justify-center p-4 lg:p-10 min-h-[300px] lg:min-h-0">
+                                                            <div className="relative w-full h-full flex items-center justify-center">
                                                                 <img
                                                                     src={imageUrl.replace('/view', '/download')}
                                                                     alt={gen.prompt}
-                                                                    className="max-w-full max-h-full object-contain"
+                                                                    className="max-w-full max-h-[60vh] lg:max-h-[80vh] object-contain rounded-lg shadow-2xl ring-1 ring-white/5"
                                                                 />
                                                             </div>
+                                                        </div>
 
-                                                            <div className="w-full lg:w-72 flex flex-col gap-6 p-2 lg:p-6 lg:border-l border-white/10">
-                                                                <div>
-                                                                    <h3 className="text-sm font-bold uppercase tracking-widest text-primary/70 mb-2">Prompt Detail</h3>
-                                                                    <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-xs text-white leading-relaxed italic">
-                                                                        "{gen.prompt}"
-                                                                    </div>
+                                                        {/* Details Sidebar */}
+                                                        <div className="flex-1 min-w-[300px] max-w-sm flex flex-col gap-8 p-6 lg:p-10 border-t lg:border-t-0 lg:border-l border-white/5 bg-black/40">
+                                                            <div className="space-y-4">
+                                                                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80">Asset Blueprint</h3>
+                                                                <div className="relative p-6 rounded-2xl bg-white/[0.03] border border-white/5 text-sm text-zinc-200 leading-relaxed font-medium italic shadow-inner">
+                                                                    "{gen.prompt}"
                                                                 </div>
+                                                            </div>
 
-                                                                <div className="mt-auto space-y-3">
-                                                                    <Button onClick={() => downloadImage(gen.image_id, gen.prompt)} className="w-full gap-2 h-12 font-bold" variant="default">
-                                                                        <Download className="h-4 w-4" />
-                                                                        Download HD
-                                                                    </Button>
-                                                                    <Button onClick={() => {
-                                                                        navigator.clipboard.writeText(gen.prompt);
-                                                                        toast.success('Prompt copied');
-                                                                    }} variant="outline" className="w-full border-white/10 text-white h-12 font-bold bg-white/5 hover:bg-white/10">
-                                                                        <Copy className="h-4 w-4 mr-2" />
-                                                                        Copy Prompt
-                                                                    </Button>
-                                                                </div>
+                                                            <div className="mt-auto space-y-4">
+                                                                <Button onClick={() => downloadImage(gen.image_id, gen.prompt)} className="w-full gap-3 h-14 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:-translate-y-0.5" variant="default">
+                                                                    <Download className="h-4 w-4" />
+                                                                    Download High-Res
+                                                                </Button>
+                                                                <Button onClick={() => {
+                                                                    navigator.clipboard.writeText(gen.prompt);
+                                                                    toast.success('Prompt copied');
+                                                                }} variant="outline" className="w-full border-white/10 text-white h-14 font-black uppercase tracking-widest text-[11px] bg-white/[0.03] hover:bg-white/[0.08] transition-all">
+                                                                    <Copy className="h-4 w-4 mr-2" />
+                                                                    Copy Prompt
+                                                                </Button>
                                                             </div>
                                                         </div>
                                                     </div>
